@@ -1,0 +1,8 @@
+{
+  "name": "whats-this",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Snap or upload a photo of anything and find out what it is.",
+  "type": "module",
+  "engines": { "node": ">=20" }
+}

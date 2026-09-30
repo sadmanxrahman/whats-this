@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What's this?</title>
+<meta name="description" content="Snap or upload a photo of anything and find out what it is.">
+<meta name="theme-color" content="#0A1310">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="What's this?">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="app">
+  <main id="screen" aria-live="polite"></main>
+
+  <nav id="dock" aria-label="Identify">
+    <div class="dock-side">
+      <button id="btn-type" class="round" type="button" aria-label="Choose what type of thing it is">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <span id="type-label" class="dock-label">Type</span>
+    </div>
+    <button id="btn-camera" class="primary" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2l1.5-2h6l1.5 2h2A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.8"/></svg>
+      <span>What's this?</span>
+    </button>
+    <div class="dock-side">
+      <button id="btn-upload" class="round" type="button" aria-label="Upload a photo from your phone">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM4 15l4.5-4.5 4 4 2.5-2.5L20 17"/><circle cx="15.5" cy="8" r="1.5"/></svg>
+      </button>
+      <span class="dock-label">Upload</span>
+    </div>
+  </nav>
+
+  <input id="file-camera" type="file" accept="image/*" capture="environment" hidden>
+  <input id="file-upload" type="file" accept="image/*" hidden>
+
+  <!-- Identifying overlay -->
+  <div id="scan" class="scan" hidden>
+    <img id="scan-img" alt="Your photo">
+    <div class="scan-frame" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></div>
+    <button id="scan-cancel" class="glass" type="button" aria-label="Cancel">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <div class="scan-status" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="scan-text"><strong id="scan-msg">Identifying…</strong><small id="scan-meta"></small></span>
+    </div>
+  </div>
+
+  <!-- Type picker -->
+  <div id="sheet" class="layer" hidden>
+    <button class="scrim" type="button" data-close aria-label="Close"></button>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <div class="grip" aria-hidden="true"></div>
+      <div class="sheet-head">
+        <div>
+          <h2 id="sheet-title">What type is it?</h2>
+          <p>Optional. It helps get a sharper answer.</p>
+        </div>
+        <button id="type-any" class="chip" type="button">Any type</button>
+      </div>
+      <div id="type-grid" class="type-grid"></div>
+    </section>
+  </div>
+
+  <!-- Side menu -->
+  <div id="drawer" class="layer" hidden>
+    <button class="scrim" type="button" data-close aria-label="Close menu"></button>
+    <nav class="drawer" aria-label="Main menu">
+      <div class="drawer-head">
+        <span class="wordmark">What's this?</span>
+        <button class="icon-btn" type="button" data-close aria-label="Close menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <button class="nav-item" type="button" data-go="home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2l1.5-2h6l1.5 2h2A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.8"/></svg>
+        <span>Identify</span>
+      </button>
+      <button class="nav-item" type="button" data-go="archive">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18v4H3zM5 9v10h14V9M10 13h4"/></svg>
+        <span>Archive</span><em id="nav-count">0</em>
+      </button>
+      <button class="nav-item" type="button" data-go="settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M16 4.5v5M8 14.5v5"/></svg>
+        <span>Settings</span>
+      </button>
+      <div id="recent" class="recent"></div>
+    </nav>
+  </div>
+
+  <div id="toast" class="toast" role="alert" hidden></div>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>
